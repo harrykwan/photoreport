@@ -1,0 +1,106 @@
+<html>
+<style>
+body{
+	color: black;
+	background-color: lightblue;
+}
+</style>
+	<head>
+		<title>Photo reporting</title>
+	</head>
+	<body>
+		<h1>Photo reporting</h1>
+<!-- 		<video id="video"></video>
+		<canvas id="canvas"></canvas><br>
+		<canvas hidden="true" id="canvas2"></canvas><br>
+		<button onclick="snap();">Snap</button> -->
+		<br>
+		<br>
+		<input id="firstfileinput" type="file" onchange="previewFile()" value=""><br>
+		<img src="" height="200" alt="">
+		<div id="positionarea"></div>
+		<br>
+		<br>
+		<button onclick="getLocation()">Get Location</button>
+		<button onclick="sendmail()">Send Email</button>
+		<script type="text/javascript">
+			document.getElementById("firstfileinput").value = '';
+			// var video = document.getElementById('video');
+			// var canvas = document.getElementById('canvas');
+			// var canvas2 = document.getElementById('canvas2');
+			// var context = canvas.getContext('2d');
+			// var context2 = canvas2.getContext('2d');
+
+			// navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.oGetUserMedia || navigator.msGetUserMedia;
+
+			// if(navigator.getUserMedia){
+			// 	navigator.getUserMedia({video:true}, streamWebCam, throwError);
+			// }
+
+			// function streamWebCam (stream) {
+			// 	video.src = window.URL.createObjectURL(stream);
+			// 	video.play();
+			// }
+
+			// function throwError (e) {
+			// 	console.log(e.name);
+			// }
+
+			// function snap () {
+			// 	canvas2.width = video.clientWidth;
+			// 	canvas2.height = video.clientHeight;
+			// 	context2.drawImage(video, 0, 0);
+
+			// 	var dataUrl = canvas2.toDataURL(),
+			//     imageFoo = document.createElement('img');
+			// 	imageFoo.src = dataUrl;
+			// 	imageFoo.style.width = video.clientWidth/3;
+			// 	imageFoo.style.height = video.clientHeight/3;
+			// 	document.body.appendChild(imageFoo);
+			
+			// }
+			
+			function getLocation() {
+				var x = document.getElementById("positionarea");
+			    if (navigator.geolocation) {
+			        navigator.geolocation.getCurrentPosition(showPosition);
+			    } else { 
+			        x.innerHTML = "Geolocation is not supported by this browser.";
+			    }
+			}
+			function showPosition(position) {
+				var x = document.getElementById("positionarea");
+			    x.innerHTML = position.coords.latitude + 
+			    ", " + position.coords.longitude;
+			}
+			function sendmail(){
+				window.open('mailto:harry1998kwan@gmail.com?subject=Water Leaking Problem&body=Hello, leakage problem occurs at '+document.getElementById("positionarea").innerHTML);
+			}
+
+			function getLocation() {
+			    if (navigator.geolocation) {
+			        navigator.geolocation.getCurrentPosition(showPosition);
+			    } else { 
+			        x.innerHTML = "Geolocation is not supported by this browser.";
+			    }
+			}
+
+			function previewFile(){
+		       var preview = document.querySelector('img'); //selects the query named img
+		       var file    = document.querySelector('input[type=file]').files[0]; //sames as here
+		       var reader  = new FileReader();
+
+		       reader.onloadend = function () {
+		           preview.src = reader.result;
+		       }
+
+		       if (file) {
+		           reader.readAsDataURL(file); //reads the data as a URL
+		       } else {
+		           preview.src = "";
+		       }
+		  }
+		</script>
+	</body>
+	<br><br>
+</html>
