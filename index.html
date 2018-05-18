@@ -1,0 +1,548 @@
+<html>
+<style>
+#startbutton{
+    width: 100%;
+    height: 50px;
+    font-size: 30px;
+}
+
+h1 {
+     font-family: 'Helvetica Neue', sans-serif; font-size: 50px; font-weight: bold; letter-spacing: -1px; line-height: 1; text-align: center;
+}
+
+h2,h3 {
+     text-align: center;
+}
+
+#pac-button{
+    width: 100%;
+}
+.container {
+    display: block;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    /*font-size: 22px;*/
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+    /*position: absolute;*/
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: lightblue;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+    background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid lightblue;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+textarea{
+    width: 100%;
+    height: 200px;
+    padding: 8px 8px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid blue;
+    border-radius: 4px;
+    background-color: lightblue;
+    color: blue;
+}
+
+input[type=text] {
+    width: 100%;
+    padding: 8px 8px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid blue;
+    border-radius: 4px;
+    background-color: lightblue;
+    color: blue;
+}
+#inputdate, #inputtime{
+    width: 49%;
+    padding: 8px 8px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid blue;
+    border-radius: 4px;
+}
+.button {
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    border: none;
+    /*padding: 16px 32px;*/
+    text-align: center;
+ /*   text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;*/
+    cursor: pointer;
+}
+/*.button2 {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #008CBA;
+}*/
+
+.button2{
+    background-color: #008CBA;
+    color: lightblue;
+}
+
+body{
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    color: lightblue;
+    background-color: #0B173B;
+	/*color: black;
+	background-color: lightblue;*/
+}
+
+#map{
+    height: 100%;
+}
+
+#descriptionarea{
+    border: 3px solid lightblue;
+    padding: 10px;
+    margin: 50px 50px;
+    border-radius: 10px;
+}
+
+</style>
+	<head>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="cordova.js"></script>
+		<title>Photo reporting</title>
+        
+	</head>         
+	<body>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRm1tSL6DMK9EPoCKNj4Bzm_cFwXOkTS0&libraries=places"></script>
+
+		<h1 style="text-align: center;">Water Leakage Reporting</h1>
+        
+        <div id="descriptionarea">
+            <h3> Warning! </h3>
+           <p> This app will collect your personal data such as name, phone number etc. Also, we will access your phone gps (for reporting location) ,photo gallery (for describing the leakage problem), and your mail application (to email those information to us). We will not sell your peronal data or use illegally. Every leakage report is significant help for us to save water from leaking. Thank you for supporting WSD.<br></p>
+        <label class="container">
+          <input onclick="privicyagree()" class="checkmark" type="checkbox" id="privicyagreecheck">I agree 
+          <span class="checkmark"></span>
+        </label>
+        </div>
+        <br>
+        <button id="startbutton" class="button button2" onclick="startreport()">Start</button>
+    <div style="display: none;" id="functionbody">
+		<br>
+        How can we call you
+        <br>
+        <input id="inputname" type="text" name="" placeholder="Your name">
+        <br>
+        <br>
+        When is it happen
+        <br>
+        <input id="inputtime" type="text" name="" value="">@<input id="inputdate" type="text" name="" value="">
+        <br>
+        <br>
+        Upload a picture may help
+        <br>
+        <button class="button button2" onclick="takepicture()">Take a picture</button>
+        <button class="button button2" onclick="uploadpicture()">Upload a picture</button>
+        <br>
+		<!-- <input id="photoinput" type="file" onchange="previewFile()" value=""> -->
+		<img style="display: none;" id="imagepreview" src="" height="200" alt="">
+		<br>
+		<br>
+        Where do you find it<br>
+        <input id="pac-input" class="controls" type="text" placeholder="Search here">
+        <button id="pac-button" class="button button2" onclick="getmylocation()">Get my location</button><br><br>
+        <div id="map"></div>
+        
+        <br>
+        <br>
+        For more details (optional)
+        <br>
+        <textarea id="inputmoredetail"></textarea>
+        <br>
+        <br>
+        How to contact you (prefer phone number)<br>
+        <input id="inputcontact" type="text" name="" placeholder="Your phone number">
+        <br>
+        <br>
+        <label class="container">
+          <input onclick="urgenttips()" class="checkmark" type="checkbox" id="urgentcheck">Urgent Case 
+          <span class="checkmark"></span>
+        </label>
+        
+        <br><br>
+		<button class="button button2" onclick="sendmail()">Send Email To Us</button>
+    </div>
+		<script type="text/javascript">
+            function startreport(){
+                if (agreeed){
+                    document.getElementById("startbutton").style.display = "none";
+                    document.getElementById("descriptionarea").style.display = "none";
+                    document.getElementById("functionbody").style.display = '';
+                } else {
+                    alert('Please read the warning and tick the "I agree" box first.')
+                }
+            }
+
+            var agreeed = false;
+            function privicyagree(){
+                if (document.getElementById("privicyagreecheck").checked){
+                    agreeed = true;
+                } else {
+                    agreeed = false;
+                }
+            }
+
+            //---------------------------------------------------------------------
+            var Latitude = undefined;
+            var Longitude = undefined;
+            var marker, map;
+
+            // Get geo coordinates
+
+            function getmylocation(){
+                var latLong = new google.maps.LatLng(Latitude, Longitude);
+
+                marker.setPosition(latLong);
+                marker.setMap(map);
+
+                map.setZoom(20);
+                map.setCenter(marker.getPosition());
+                
+            }
+
+            function getMapLocation() {
+                navigator.geolocation.getCurrentPosition
+                (onMapSuccess, onMapError, { enableHighAccuracy: true });
+            }
+
+            // Success callback for get geo coordinates
+
+            var onMapSuccess = function (position) {
+
+                Latitude = position.coords.latitude;
+                Longitude = position.coords.longitude;
+                getMap(Latitude, Longitude);
+
+            }
+
+            // Get map by using coordinates
+
+            function getMap(latitude, longitude) {
+                var mapOptions = {
+                    center: new google.maps.LatLng(0, 0),
+                    zoom: 20,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+
+                map = new google.maps.Map
+                (document.getElementById("map"), mapOptions);
+
+
+                var latLong = new google.maps.LatLng(latitude, longitude);
+
+                marker = new google.maps.Marker({
+                    position: latLong,
+                    draggable: true
+                });
+                
+                marker.setMap(map);
+
+                map.setZoom(20);
+                map.setCenter(marker.getPosition());
+                var templatlong = new google.maps.LatLng(marker.getPosition().lat(), marker.getPosition().lng());
+                getLatLongDetail(templatlong);
+                marker.addListener('drag', function() {
+                    var templatlong = new google.maps.LatLng(marker.getPosition().lat(), marker.getPosition().lng());
+                    getLatLongDetail(templatlong);
+                });
+            }
+
+            // Success callback for watching your changing position
+
+            var onMapWatchSuccess = function (position) {
+                var updatedLatitude = position.coords.latitude;
+                var updatedLongitude = position.coords.longitude;
+                if (updatedLatitude != Latitude && updatedLongitude != Longitude) {
+
+                    Latitude = updatedLatitude;
+                    Longitude = updatedLongitude;
+                    getMap(updatedLatitude, updatedLongitude);
+                }
+            }
+
+            // Error callback
+
+            function onMapError(error) {
+                console.log('code: ' + error.code + '\n' +
+                    'message: ' + error.message + '\n');
+            }
+
+            // Watch your changing position
+
+            function watchMapPosition() {
+                return navigator.geolocation.watchPosition
+                (onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
+            }
+
+            getMapLocation();
+            // getMap(Latitude,Longitude);
+
+
+            var input = document.getElementById('pac-input');
+            var searchBox = new google.maps.places.SearchBox(input);
+            // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+            // Bias the SearchBox results towards current map's viewport.
+            // map.addListener('bounds_changed', function() {
+            //   searchBox.setBounds(map.getBounds());
+            // });
+
+            // var markers = [];
+            // Listen for the event fired when the user selects a prediction and retrieve
+            // more details for that place.
+            searchBox.addListener('places_changed', function() {
+              var places = searchBox.getPlaces();
+
+              if (places.length == 0) {
+                return;
+              }
+
+              // Clear out the old markers.
+              // markers.forEach(function(marker) {
+              //   marker.setMap(null);
+              // });
+              // markers = [];
+
+              // For each place, get the icon, name and location.
+              var bounds = new google.maps.LatLngBounds();
+              places.forEach(function(place) {
+                if (!place.geometry) {
+                  console.log("Returned place contains no geometry");
+                  return;
+                }
+                var icon = {
+                  url: place.icon,
+                  size: new google.maps.Size(71, 71),
+                  origin: new google.maps.Point(0, 0),
+                  anchor: new google.maps.Point(17, 34),
+                  scaledSize: new google.maps.Size(25, 25)
+                };
+
+                marker.setPosition(place.geometry.location);
+                // var templatlong = new google.maps.LatLng(marker.getPosition().lat(), marker.getPosition().lng());
+                // getLatLongDetail(templatlong);
+                // alert(marker.getPosition().lat()+' '+marker.getPosition().lng());
+                if (place.geometry.viewport) {
+                  // Only geocodes have viewport.
+                  bounds.union(place.geometry.viewport);
+                } else {
+                  bounds.extend(place.geometry.location);
+                }
+              });
+              map.fitBounds(bounds);
+              var templatlong = new google.maps.LatLng(marker.getPosition().lat(), marker.getPosition().lng());
+              getLatLongDetail(templatlong);
+            });
+
+            var globalformattedaddress = '';
+            function getLatLongDetail(myLatlng) {
+                // console.log('damn');
+                var geocoder = new google.maps.Geocoder(); 
+                geocoder.geocode({ 'latLng': myLatlng },
+                  function (results, status) {
+                      if (status == google.maps.GeocoderStatus.OK) {
+                          if (results[0]) {
+
+                              var address = "", city = "", state = "", zip = "", country = "", formattedAddress = "";
+                              var lat;
+                              var lng;
+
+                              for (var i = 0; i < results[0].address_components.length; i++) {
+                                  var addr = results[0].address_components[i];
+                                  // check if this entry in address_components has a type of country
+                                  if (addr.types[0] == 'country')
+                                      country = addr.long_name;
+                                  else if (addr.types[0] == 'street_address') // address 1
+                                      address = address + addr.long_name;
+                                  else if (addr.types[0] == 'establishment')
+                                      address = address + addr.long_name;
+                                  else if (addr.types[0] == 'route')  // address 2
+                                      address = address + addr.long_name;
+                                  else if (addr.types[0] == 'postal_code')       // Zip
+                                      zip = addr.short_name;
+                                  else if (addr.types[0] == ['administrative_area_level_1'])       // State
+                                      state = addr.long_name;
+                                  else if (addr.types[0] == ['locality'])       // City
+                                      city = addr.long_name;
+                              }
+
+
+                              if (results[0].formatted_address != null) {
+                                  formattedAddress = results[0].formatted_address;
+                              }
+
+                              //debugger;
+
+                              var location = results[0].geometry.location;
+
+                              lat = location.lat();
+                              lng = location.lng();
+                              globalformattedaddress = formattedAddress
+                              // alert('City: '+ city + '\n' + 'State: '+ state + '\n' + 'Zip: '+ zip + '\n' + 'Formatted Address: '+ formattedAddress + '\n' + 'Lat: '+ lat + '\n' + 'Lng: '+ lng);
+
+                          }
+
+                      }
+
+                  });
+            }
+
+
+//------------------------------------------------------------------------------------------------
+            
+            function urgenttips(){
+                if (document.getElementById("urgentcheck").checked){
+                    if (confirm("Urgent means that the water leakage problem affect the daily life of the neightbourhood seriously, like causing traffic jam. Are you sure you want to tick this box?")){
+                        document.getElementById("urgentcheck").checked = true;
+                    } else {
+                        document.getElementById("urgentcheck").checked = false;
+                    }
+                }
+                
+                
+            }
+
+            var currentdate = new Date(); 
+            var nowdate =  currentdate.getDate() + "/"
+                            + (currentdate.getMonth()+1)  + "/" 
+                            + currentdate.getFullYear(); 
+            var nowtime =  currentdate.getHours() + ":"  
+                            + currentdate.getMinutes(); //+ ":" 
+                            // + currentdate.getSeconds();
+            document.getElementById("inputdate").value = nowdate;
+            document.getElementById("inputtime").value = nowtime;
+
+			document.getElementById("photoinput").value = '';
+			
+			function sendmail(){
+                // alert(getLatLongDetail(templatlong));
+                // var templatlong = new google.maps.LatLng(marker.getPosition().lat(), marker.getPosition().lng());
+                // getLatLongDetail(templatlong);
+                // alert(marker.getPosition().lat()+' '+marker.getPosition().lng());
+                var tempemailbody = "Hello I am "+document.getElementById("inputname").value+". I found a water leakage problem at about "+document.getElementById("inputtime").value+" on the "+document.getElementById("inputdate").value+". The location is "+globalformattedaddress+' ('+marker.getPosition().lat()+', '+marker.getPosition().lng()+'). '+document.getElementById("inputmoredetail").value+"\nYou can contact me at "+document.getElementById("inputcontact").value+". Thank you. ";//<img src='"+document.getElementById("imagepreview").src+"'>";
+                var temptitle = "Water Leakage Report";
+                if (document.getElementById("urgentcheck").checked){
+                    temptitle = "!Urgent! "+temptitle;
+                }
+                // alert(document.getElementById("imagepreview").src.substring(0,100));
+                var tempimagedata = document.getElementById("imagepreview").src;
+                // var tempimagedata = 'base64:icon.'+document.getElementById("imagepreview").src.substring(document.getElementById("imagepreview").src.indexOf('/')+1,document.getElementById("imagepreview").src.indexOf(';'))+'/'+document.getElementById("imagepreview").src.substring(document.getElementById("imagepreview").src.indexOf(',')+1,document.getElementById("imagepreview").src.length);
+                // alert(tempimagedata.substring(0,100));
+                // alert(temptitle);
+                // alert(tempemailbody);
+				// window.open('mailto:harry1998kwan@gmail.com?subject=Water Leaking Problem&body=Hello, leakage problem occurs at '+document.getElementById("positionarea").innerHTML+'<img src="'+dataUrl+'">');
+                cordova.plugins.email.isAvailable(function (hasAccount) {
+                    cordova.plugins.email.open({
+                        to:          'harry1998kwan@gmail.com',//'wsdinfo@wsd.gov.hk', // email addresses for TO field
+                        // app:         'gmail', 
+                        // cc:          Array, // email addresses for CC field
+                        // bcc:         Array, // email addresses for BCC field
+                        attachments: tempimagedata, // file paths or base64 data streams
+                        subject:    temptitle, // subject of the email
+                        body:       tempemailbody, // email body (for HTML, set isHtml to true)
+                        isHtml:    true, // indicats if the body is HTML or plain text
+                        // type:       String, // content type of the email (Android only)
+                    });
+
+                });
+			}
+            
+            function takepicture(){
+                navigator.camera.getPicture(onSuccess, onFail, { quality: 50,
+                destinationType: Camera.DestinationType.FILE_URI });
+            }
+
+            function uploadpicture(){
+                navigator.camera.getPicture(onSuccess, onFail, { quality: 50,
+                sourceType: Camera.PictureSourceType.PHOTOLIBRARY, allowEdit: true });
+            }
+
+            function onSuccess(imageURI) {
+                var image = document.getElementById('imagepreview');
+                image.style.display = "";
+                image.src = imageURI;
+            }
+
+            function onFail(message) {
+                alert(message);
+            }
+
+			function previewFile(){
+		       var preview = document.querySelector('img'); //selects the query named img
+		       var file    = document.getElementById("photoinput").files[0]; //sames as here
+		       var reader  = new FileReader();
+
+		       reader.onloadend = function () {
+		           preview.src = reader.result;
+		       }
+
+		       if (file) {
+		           reader.readAsDataURL(file); //reads the data as a URL
+		       } else {
+		           preview.src = "";
+		       }
+		  }
+		</script>
+	</body>
+	<br><br>
+</html>
